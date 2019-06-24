@@ -1,0 +1,15 @@
+Options +FollowSymlinks
+Options -Indexes
+
+RewriteEngine on
+RewriteRule ^$ /client/user.html [L]
+
+RewriteRule ^admin$ /client/admin.html [L]
+
+<If "%{REQUEST_URI} == '/admin'">
+    Require user admin
+    AuthName "Private zone. Only for administrator!"
+    AuthType Basic
+    AuthBasicProvider file
+    AuthUserFile "/var/www/html/bookstore/.htpasswd"
+</If>

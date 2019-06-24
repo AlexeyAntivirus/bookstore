@@ -1,3 +1,58 @@
+plugins {
+    id 'java'
+    id 'org.springframework.boot' version '2.1.6.RELEASE'
+    id 'io.spring.dependency-management' version '1.0.8.RELEASE'
+    id 'io.freefair.lombok' version '3.6.4'
+}
+
 group 'com.horizonbit'
 version '0.1.0'
 
+sourceCompatibility = 1.8
+
+repositories {
+    mavenCentral()
+}
+
+configurations {
+    developmentOnly
+    runtimeClasspath {
+        extendsFrom developmentOnly
+    }
+}
+
+bootJar {
+    mainClassName = 'com.horizonbit.bookstore.server.BookStoreApplication'
+}
+
+
+dependencies {
+    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-web'
+    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-data-jpa'
+    implementation group: 'commons-io', name: 'commons-io', version: '2.4'
+
+    runtimeOnly group: 'com.h2database', name: 'h2', version: '1.4.199'
+
+    testImplementation group: 'org.springframework.boot', name: 'spring-boot-starter-test'
+    
+    developmentOnly 'org.springframework.boot:spring-boot-devtools'
+}
+
+task copyDist(type: Copy) {
+    into file("${rootProject.buildDir}/app")
+    into("/") {
+        from file("${rootProject.projectDir}/apache")
+    }
+
+    into("/") {
+        from file("${rootProject.buildDir}/libs")
+    }
+
+    into("/client") {
+        from file("${rootProject.projectDir}/client")
+    }
+}
+
+build {
+    dependsOn copyDist
+}
